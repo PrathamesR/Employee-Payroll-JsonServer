@@ -20,15 +20,51 @@ namespace EmployeePayrollJsonDB
             client = new RestClient("http://localhost:3000");
         }
 
-        [TestMethod]
-        public void TestMethod1()
+        public List<Employee> ReadData()
         {
             RestRequest request = new RestRequest("/employee", Method.GET);
             IRestResponse response = client.Execute(request);
             List<Employee> employees = JsonConvert.DeserializeObject<List<Employee>>(response.Content);
+            return employees;
+        }
 
-            Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
 
+
+        public HttpStatusCode UpdateData(string name, string property, int value)
+        {
+            List<Employee> employees = ReadData();
+
+            int i = 0;
+            foreach (var employee in employees)
+            {
+                i++;
+                if (employee.Equals(name))
+                    break;
+            }
+
+            try
+            {
+                RestRequest request = new RestRequest("/employee/" + i, Method.PATCH);
+                JObject JsonContact = new JObject();
+                JsonContact.Add(property, value);
+
+                request.AddParameter("application/json", JsonContact, ParameterType.RequestBody);
+
+                IRestResponse response = client.Execute(request);
+
+                return response.StatusCode;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return HttpStatusCode.NotFound;
+            }
+        }
+
+        [TestMethod]
+        public void TestMethod1()
+        {
+            List<Employee> employees = ReadData();
             Assert.AreEqual(employees.Count, 1);
         }
 
@@ -103,6 +139,17 @@ namespace EmployeePayrollJsonDB
             {
                 Console.WriteLine(e.Message);
             }
+        }
+
+
+        [TestMethod]
+        public void TestMethod4()
+        {
+            string name = "Prathamesh";
+            string property = "Salary";
+            int sal = 40000;
+
+            Assert.AreEqual(HttpStatusCode.OK, UpdateData(name,property,sal));
         }
     }
 }
