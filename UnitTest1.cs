@@ -69,5 +69,40 @@ namespace EmployeePayrollJsonDB
 
             Assert.AreEqual(responseCode, HttpStatusCode.Created);
         }
+
+        [TestMethod]
+        public void TestMethod3()
+        {
+            HttpStatusCode responseCode = HttpStatusCode.BadRequest;
+            try
+            {
+                List<Employee> employees = new List<Employee>();
+
+                employees.Add(new Employee("asdf", 1000, "11/10/2020", 1234567890, "Mech", "Mumbai", 'F'));
+                employees.Add(new Employee("sdfds", 2000, "09/01/2020", 1561894491, "Mech", "Mumbai", 'M'));
+
+                foreach (var employee in employees)
+                {
+                    RestRequest request = new RestRequest("/employee", Method.POST);
+                    JObject JsonContact = new JObject();
+                    JsonContact.Add("Name", employee.Name);
+                    JsonContact.Add("Salary", employee.Salary);
+                    JsonContact.Add("StartDate", employee.StartDate);
+                    JsonContact.Add("PhoneNumber", employee.PhoneNumber);
+                    JsonContact.Add("Department", employee.Department);
+                    JsonContact.Add("Address", employee.Address);
+                    JsonContact.Add("Gender", employee.Gender);
+
+                    request.AddParameter("application/json", JsonContact, ParameterType.RequestBody);
+                    IRestResponse response = client.Execute(request);
+
+                    Assert.AreEqual(responseCode, HttpStatusCode.Created);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
     }
 }

@@ -10,6 +10,16 @@
       "Gender": 77,
       "Email": "abc@gmail.com",
       "id": 1
+    },
+    {
+      "Name": "asdf",
+      "Salary": 1000,
+      "StartDate": "11/10/2020",
+      "PhoneNumber": 1234567890,
+      "Department": "Mech",
+      "Address": "Mumbai",
+      "Gender": 70,
+      "id": 2
     }
   ]
 }
