@@ -61,6 +61,33 @@ namespace EmployeePayrollJsonDB
             }
         }
 
+        public HttpStatusCode DeleteData(string name, string property, int value)
+        {
+            List<Employee> employees = ReadData();
+
+            int i = 0;
+            foreach (var employee in employees)
+            {
+                i++;
+                if (employee.Equals(name))
+                    break;
+            }
+
+            try
+            {
+                RestRequest request = new RestRequest("/employee/" + i, Method.DELETE);
+                JObject JsonContact = new JObject();
+                IRestResponse response = client.Execute(request);
+
+                return response.StatusCode;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return HttpStatusCode.NotFound;
+            }
+        }
+
         [TestMethod]
         public void TestMethod1()
         {
@@ -149,7 +176,17 @@ namespace EmployeePayrollJsonDB
             string property = "Salary";
             int sal = 40000;
 
-            Assert.AreEqual(HttpStatusCode.OK, UpdateData(name,property,sal));
+            Assert.AreEqual(HttpStatusCode.OK, UpdateData(name, property, sal));
+        }
+
+        [TestMethod]
+        public void TestMethod5()
+        {
+            string name = "Prathamesh";
+            string property = "Salary";
+            int sal = 40000;
+
+            Assert.AreEqual(HttpStatusCode.OK, DeleteData(name, property, sal));
         }
     }
 }
